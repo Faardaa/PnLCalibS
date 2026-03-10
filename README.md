@@ -10,8 +10,10 @@ Extension of the previous paper "No Bells, Just Whistles: Sports Field Registrat
 <p align="center"><img src=figures/FieldReconstruction-1.png  width=70% height=70%></p>
 </div>
 
-### 🚀 Updates (2026-01-03)
+### 🚀 Updates (2026-10-03)
 
+- ✅ **Accepted to Computer Vision and Image Understanding Journal**
+  
 - ✅ **Weighting parameter $\alpha$** added to the PnL refinement module, improving performance across all benchmarks.
 
 - ✅ **Lens Distortion** optimization added into ```utils/utils_calib_wp.py``` file
