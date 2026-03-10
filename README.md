@@ -10,7 +10,7 @@ Extension of the previous paper "No Bells, Just Whistles: Sports Field Registrat
 <p align="center"><img src=figures/FieldReconstruction-1.png  width=70% height=70%></p>
 </div>
 
-### 🚀 Updates (2026-10-03)
+### 🚀 Updates (2026-03-10)
 
 - ✅ **Accepted to Computer Vision and Image Understanding Journal**
   
