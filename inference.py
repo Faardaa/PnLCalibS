@@ -11,7 +11,7 @@ from tqdm import tqdm
 from PIL import Image
 from matplotlib.patches import Polygon
 
-from model.cls_hrnet import get_cls_net1
+from model.cls_hrnet import get_cls_net
 from model.cls_hrnet_l import get_cls_net as get_cls_net_l
 
 from utils.utils_calib import FramebyFrameCalib, pan_tilt_roll_to_orientation
