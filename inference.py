@@ -18,6 +18,8 @@ from utils.utils_calib import FramebyFrameCalib, pan_tilt_roll_to_orientation
 from utils.utils_heatmap import get_keypoints_from_heatmap_batch_maxpool, get_keypoints_from_heatmap_batch_maxpool_l, \
     complete_keypoints, coords_to_dict
 
+OUTLIER_THRESHOLD = 0.05 
+
 
 lines_coords = [[[0., 54.16, 0.], [16.5, 54.16, 0.]],
                 [[16.5, 13.84, 0.], [16.5, 54.16, 0.]],
