@@ -11,7 +11,7 @@ from tqdm import tqdm
 from PIL import Image
 from matplotlib.patches import Polygon
 
-from model.cls_hrnet import get_cls_net
+from model.cls_hrnet import get_cls_net1
 from model.cls_hrnet_l import get_cls_net as get_cls_net_l
 
 from utils.utils_calib import FramebyFrameCalib, pan_tilt_roll_to_orientation
@@ -153,27 +153,48 @@ def process_input(input_path, input_type, model_kp, model_line, kp_threshold, li
 
         pbar = tqdm(total=total_frames)
 
+        # --- Outlier rejection variables ---
+        prev_final_params_dict = None
+        frame_idx = 0
+
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
                 break
 
             final_params_dict = inference(cam, frame, model, model_l, kp_threshold, line_threshold, pnl_refine)
+
+            # --- Outlier rejection filter ---
+            if final_params_dict is not None and prev_final_params_dict is not None:
+                # Compare the homography (or projection matrix) from current and previous
+                curr_h = final_params_dict.get('homography')
+                prev_h = prev_final_params_dict.get('homography')
+                if curr_h is not None and prev_h is not None:
+                    diff = np.linalg.norm(curr_h - prev_h) / (np.linalg.norm(prev_h) + 1e-6)
+                    if diff > OUTLIER_THRESHOLD:
+                        final_params_dict = prev_final_params_dict.copy()
+                        print(f"Frame {frame_idx}: outlier detected (diff={diff:.3f}), using previous.")
+            # Update stored parameters (if current is valid)
+            if final_params_dict is not None:
+                prev_final_params_dict = final_params_dict.copy()
+            # --- End filter ---
+
             if final_params_dict is not None:
                 P = projection_from_cam_params(final_params_dict)
                 projected_frame = project(frame, P)
             else:
                 projected_frame = frame
-                
+
             if save_path != "":
                 out.write(projected_frame)
-    
+
             if display:
                 cv2.imshow('Projected Frame', projected_frame)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
-            
+
             pbar.update(1)
+            frame_idx += 1
 
         cap.release()
         if save_path != "":
@@ -181,6 +202,7 @@ def process_input(input_path, input_type, model_kp, model_line, kp_threshold, li
         cv2.destroyAllWindows()
 
     elif input_type == 'image':
+        # ... (image processing unchanged) ...
         frame = cv2.imread(input_path)
         if frame is None:
             print(f"Error: Unable to read the image {input_path}")
